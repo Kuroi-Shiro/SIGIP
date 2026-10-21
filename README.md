@@ -89,7 +89,7 @@ Los módulos se relacionan así: un **Producto** pertenece a una **Categoría** 
 
 ## 7. Diagrama Entidad-Relación
 
-El siguiente diagrama representa la estructura relacional propuesta para la base de datos de SIGIP.
+El siguiente diagrama representa la estructura relacional para la base de datos de SIGIP.
 
 ```mermaid
 erDiagram
