@@ -86,3 +86,113 @@ Los módulos se relacionan así: un **Producto** pertenece a una **Categoría** 
 | **RF-40** | Reportes | Generar reporte de entrega | Sistema, Administrador, Empleado | El sistema permitirá generar un reporte de una o varias entregas en específico en un formato apto para ser usado de manera externa | Imprescindible |
 | **RF-41** | Alertas | Alertar stock mínimo | Sistema | El sistema mandará un correo al administrador cuando un producto se encuentre en su stock mínimo. | Imprescindible |
 | **RF-42** | Reportes | Generar reporte periódico | Sistema | El sistema genera y manda un correo al administrador con un reporte de movimientos y entregas según el lapso de tiempo establecido | Imprescindible |
+
+## 7. Diagrama Entidad-Relación
+
+El siguiente diagrama representa la estructura relacional propuesta para la base de datos de SIGIP.
+
+```mermaid
+erDiagram
+
+    USUARIOS {
+        bigint id PK
+        varchar nombre
+        varchar email UK
+        varchar password
+        varchar rol
+        boolean activo
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    CATEGORIAS {
+        bigint id PK
+        varchar nombre UK
+        text descripcion
+        boolean activo
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    PRODUCTOS {
+        bigint id PK
+        bigint categoria_id FK
+        varchar codigo UK
+        varchar nombre
+        text descripcion
+        varchar imagen
+        decimal precio
+        int stock_actual
+        int stock_minimo
+        boolean activo
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    PROVEEDORES {
+        bigint id PK
+        varchar nombre
+        varchar telefono
+        varchar email
+        varchar direccion
+        boolean activo
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    PROVEEDOR_PRODUCTO {
+        bigint id PK
+        bigint proveedor_id FK
+        bigint producto_id FK
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    MOVIMIENTOS {
+        bigint id PK
+        bigint producto_id FK
+        bigint usuario_id FK
+        varchar tipo
+        int cantidad
+        varchar estado
+        text observaciones
+        datetime fecha_movimiento
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    ENTREGAS {
+        bigint id PK
+        bigint usuario_id FK
+        varchar cliente
+        varchar telefono_cliente
+        varchar destino
+        varchar estado
+        datetime fecha_entrega
+        text observaciones
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    ENTREGA_PRODUCTO {
+        bigint id PK
+        bigint entrega_id FK
+        bigint producto_id FK
+        int cantidad
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    CATEGORIAS ||--o{ PRODUCTOS : clasifica
+
+    PROVEEDORES ||--o{ PROVEEDOR_PRODUCTO : suministra
+    PRODUCTOS ||--o{ PROVEEDOR_PRODUCTO : "es suministrado por"
+
+    USUARIOS ||--o{ MOVIMIENTOS : registra
+    PRODUCTOS ||--o{ MOVIMIENTOS : afecta
+
+    USUARIOS ||--o{ ENTREGAS : registra
+
+    ENTREGAS ||--o{ ENTREGA_PRODUCTO : contiene
+    PRODUCTOS ||--o{ ENTREGA_PRODUCTO : pertenece
+```
