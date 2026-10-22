@@ -3,6 +3,8 @@
 namespace Database\Factories;
 
 use App\Models\Movimiento;
+use app\Models\Producto;
+use app\Models\Usuario;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -10,6 +12,9 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class MovimientoFactory extends Factory
 {
+
+    protected $model = Movimiento::class;
+
     /**
      * Define the model's default state.
      *
@@ -19,6 +24,13 @@ class MovimientoFactory extends Factory
     {
         return [
             //
+            'producto_id' => Producto::inRandomOrder()->first()?->id ?? Producto::factory(),
+            'usuario_id' => Usuario::inRandomOrder()->first()?->id ?? Usuario::factory(),
+            'tipo' => fake()->randomElement(['entrada', 'salida']),
+            'cantidad' => fake()->numberBetween(1, 100),
+            'estado' => fake()->randomElement(['completado', 'pendiente', 'cancelado']),
+            'observaciones' => fake()->optional()->sentence(),
+            'fecha_movimiento' => fake()->dateTimeBetween('-1 month', 'now'),
         ];
     }
 }
