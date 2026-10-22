@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class EntregaFactory extends Factory
 {
+
+    protected $model = Entrega::class;
     /**
      * Define the model's default state.
      *

@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class CategoriaFactory extends Factory
 {
+
+    protected $model = Categoria::class;
     /**
      * Define the model's default state.
      *
@@ -19,6 +21,9 @@ class CategoriaFactory extends Factory
     {
         return [
             //
+            'nombre' => ucfirst(fake()->unique()->word(2, true)),
+            'descripcion' => fake()->optional()->sentence(),
+            'activo' => fake()->boolean(80),
         ];
     }
 }
