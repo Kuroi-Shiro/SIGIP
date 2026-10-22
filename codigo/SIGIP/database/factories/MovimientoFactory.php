@@ -3,8 +3,8 @@
 namespace Database\Factories;
 
 use App\Models\Movimiento;
-use app\Models\Producto;
-use app\Models\Usuario;
+use App\Models\Producto;
+use App\Models\Usuario;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

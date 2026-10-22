@@ -21,7 +21,7 @@ class CategoriaFactory extends Factory
     {
         return [
             //
-            'nombre' => ucfirst(fake()->unique()->word(2, true)),
+            'nombre' => ucfirst(fake()->unique()->words(2, true)),
             'descripcion' => fake()->optional()->sentence(),
             'activo' => fake()->boolean(90),
         ];
