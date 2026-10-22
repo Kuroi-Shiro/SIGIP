@@ -13,5 +13,6 @@ class MovimientoSeeder extends Seeder
     public function run(): void
     {
         //
+        Movimiento::factory(20)->create();
     }
 }
