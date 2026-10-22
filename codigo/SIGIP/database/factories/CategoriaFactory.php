@@ -23,7 +23,7 @@ class CategoriaFactory extends Factory
             //
             'nombre' => ucfirst(fake()->unique()->word(2, true)),
             'descripcion' => fake()->optional()->sentence(),
-            'activo' => fake()->boolean(80),
+            'activo' => fake()->boolean(90),
         ];
     }
 }
