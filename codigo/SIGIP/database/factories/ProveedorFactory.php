@@ -10,6 +10,9 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class ProveedorFactory extends Factory
 {
+
+    protected $model = Proveedor::class;
+
     /**
      * Define the model's default state.
      *
@@ -19,6 +22,11 @@ class ProveedorFactory extends Factory
     {
         return [
             //
+            'nombre' => fake()->company(),
+            'telefono' => fake()->numerify('###-###-####'),
+            'email' => fake()->unique()->safeEmail(),
+            'direccion' => fake()->address(),
+            'activo' => fake()->boolean(90),
         ];
     }
 }
