@@ -2,13 +2,13 @@
 
 namespace Database\Factories;
 
-use App\Models\Movimientos;
+use App\Models\Usuario;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<Movimientos>
+ * @extends Factory<Usuario>
  */
-class MovimientosFactory extends Factory
+class UsuarioFactory extends Factory
 {
     /**
      * Define the model's default state.
