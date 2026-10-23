@@ -85,7 +85,7 @@ Los módulos se relacionan así: un **Producto** pertenece a una **Categoría** 
 | **RF-39** | Reportes | Generar catalogo | Sistema, Administrador | El sistema permitirá generar un catálogo en un formato apto para ser usado de manera externa | Imprescindible |
 | **RF-40** | Reportes | Generar reporte de entrega | Sistema, Administrador, Empleado | El sistema permitirá generar un reporte de una o varias entregas en específico en un formato apto para ser usado de manera externa | Imprescindible |
 | **RF-41** | Alertas | Alertar stock mínimo | Sistema | El sistema mandará un correo al administrador cuando un producto se encuentre en su stock mínimo. | Imprescindible |
-| **RF-42** | Alertas | Alerta pedido no realizado | Sistema | El sistema mandará un correo al administrador cuando un pedido lleve 30 dias en estado Pendiente. | Imprescindible |
+| **RF-42** | Alertas | Alerta pedido no completado | Sistema | El sistema mandará un correo al administrador cuando un pedido lleve 30 dias en estado Pendiente. | Imprescindible |
 
 ## Actualización:
 
@@ -432,7 +432,6 @@ Dado que se cumplió el lapso de tiempo establecido, cuando el sistema ejecute l
 
 **Escenario B: Flujo de Validación o Excepción**
 Dado que no hubo movimientos ni entregas durante el lapso establecido, cuando el sistema ejecute la generación programada, entonces generará el reporte indicando que no hubo registros y lo enviará por correo al Administrador.
-| **RF-42** | Reportes | Generar reporte periódico | Sistema | El sistema genera y manda un correo al administrador con un reporte de movimientos y entregas según el lapso de tiempo establecido | Imprescindible |
 
 ## 7. Diagrama Entidad-Relación
 
