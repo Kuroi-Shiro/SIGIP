@@ -23,7 +23,7 @@ class ProductoFactory extends Factory
     {
         return [
             //
-            'categoria_id' => Categoria::inRandomOrder()->first()->id ?? Categoria::factory(),
+            'categoria_id' => Categoria::inRandomOrder()->first()?->id ?? Categoria::factory(),
             'codigo' => strtoupper(fake()->unique()->bothify('PROD-#####')),
             'nombre' => ucfirst(fake()->unique()->words(3, true)),
             'descripcion' => fake()->optional()->paragraph(),

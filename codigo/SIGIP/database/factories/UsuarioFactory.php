@@ -20,7 +20,7 @@ class UsuarioFactory extends Factory
     {
         return [
             //
-            'nombre' => fake()->Name(),
+            'nombre' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'password' => Hash::make('password1237'),
             'rol' => fake()->randomElement(['admin', 'user']),
