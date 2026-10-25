@@ -13,7 +13,20 @@ return new class extends Migration
     {
         Schema::create('productos', function (Blueprint $table) {
             $table->id();
+ 
+            $table->foreignId('categoria_id')->nullable()->constrained('categorias')->nullOnDelete();
+ 
+            $table->string('codigo', 50)->unique();
+            $table->string('nombre');
+            $table->text('descripcion')->nullable();
+            $table->string('imagen')->nullable();
+            $table->decimal('precio', 10, 2)->unsigned();
+            $table->unsignedInteger('stock_actual')->default(0);
+            $table->unsignedInteger('stock_minimo')->default(0);
+            $table->boolean('activo')->default(true); 
             $table->timestamps();
+ 
+            $table->index('nombre');
         });
     }
 
