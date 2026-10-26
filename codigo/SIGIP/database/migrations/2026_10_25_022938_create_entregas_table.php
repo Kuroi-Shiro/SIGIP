@@ -13,7 +13,17 @@ return new class extends Migration
     {
         Schema::create('entregas', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('usuario_id')->constrained('usuarios')->restrictOnDelete();
+ 
+            $table->string('cliente');
+            $table->string('telefono_cliente', 20)->nullable();
+            $table->string('destino');
+            $table->enum('estado', ['pendiente', 'completado', 'cancelado'])->default('pendiente');
+            $table->dateTime('fecha_entrega')->nullable();
+            $table->text('observaciones')->nullable();
             $table->timestamps();
+ 
+            $table->index(['estado', 'created_at']);
         });
     }
 
