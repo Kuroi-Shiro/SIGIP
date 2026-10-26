@@ -14,6 +14,10 @@ Route::get('/', function () {
 
 #CATEGORIAS
 Route::resource('categorias', CategoriaController::class);
+Route::patch(
+    '/categorias/{categoria}/archivar',
+    [CategoriaController::class, 'archivar']
+)->name('categorias.archivar');
 
 #PRODUCTOS
 Route::resource('productos', ProductoController::class);

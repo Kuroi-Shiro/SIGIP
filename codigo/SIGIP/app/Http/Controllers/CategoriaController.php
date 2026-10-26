@@ -13,6 +13,7 @@ class CategoriaController extends Controller
     public function index(): View
     {
         $categorias = Categoria::withCount('productos')
+            ->where('activo', true)
             ->orderBy('nombre')
             ->paginate(10);
 
@@ -73,5 +74,24 @@ class CategoriaController extends Controller
         return redirect()
             ->route('categorias.index')
             ->with('exito', 'Categoría eliminada.');
+    }
+
+
+
+    public function archivar(Categoria $categoria): RedirectResponse
+    {
+        if (!$categoria->activo) {
+            return redirect()
+                ->route('categorias.index')
+                ->with('error', 'La categoría ya se encuentra archivada.');
+        }
+
+        $categoria->update([
+            'activo' => false,
+        ]);
+
+        return redirect()
+            ->route('categorias.index')
+            ->with('exito', 'Categoría archivada.');
     }
 }
