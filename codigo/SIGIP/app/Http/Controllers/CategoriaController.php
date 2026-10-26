@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ActualizarCategoriaRequest;
+use App\Http\Requests\GuardarCategoriaRequest;
 use App\Models\Categoria;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class CategoriaController extends Controller
@@ -15,23 +16,23 @@ class CategoriaController extends Controller
             ->orderBy('nombre')
             ->paginate(10);
 
-
         return view('categorias.index', compact('categorias'));
     }
+
 
     public function create(): View
     {
         return view('categorias.create');
+
     }
 
 
-    public function store(Request $request): RedirectResponse
+    public function store(GuardarCategoriaRequest $request): RedirectResponse
     {
-        Categoria::create([
-            'nombre' => $request->nombre,
-            'descripcion' => $request->descripcion,
-            'activo' => true,
 
+        Categoria::create([
+            ...$request->validated(),
+            'activo' => true,
         ]);
 
         return redirect()
@@ -46,26 +47,25 @@ class CategoriaController extends Controller
         return view('categorias.show', compact('categoria'));
     }
 
-
     public function edit(Categoria $categoria): View
     {
         return view('categorias.edit', compact('categoria'));
+
     }
 
+    public function update(
 
-    public function update(Request $request, Categoria $categoria): RedirectResponse
-    {
-        $categoria->update([
-            'nombre' => $request->nombre,
-            'descripcion' => $request->descripcion,
-        ]);
+        ActualizarCategoriaRequest $request,
+        Categoria $categoria
+
+    ): RedirectResponse {
+        $categoria->update($request->validated());
 
         return redirect()
             ->route('categorias.index')
             ->with('exito', 'Categoría actualizada.');
     }
 
-    
     public function destroy(Categoria $categoria): RedirectResponse
     {
         $categoria->delete();
