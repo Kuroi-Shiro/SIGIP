@@ -13,7 +13,14 @@ return new class extends Migration
     {
         Schema::create('entrega_producto', function (Blueprint $table) {
             $table->id();
+ 
+            $table->foreignId('entrega_id')->constrained('entregas')->cascadeOnDelete();
+            $table->foreignId('producto_id')->constrained('productos')->restrictOnDelete();
+ 
+            $table->unsignedInteger('cantidad');
             $table->timestamps();
+ 
+            $table->unique(['entrega_id', 'producto_id']);
         });
     }
 
