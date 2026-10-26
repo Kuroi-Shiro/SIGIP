@@ -24,6 +24,10 @@ Route::patch(
 
 #PROVEEDORES
 Route::resource('proveedores', ProveedorController::class);
+Route::patch(
+    '/proveedores/{proveedor}/archivar',
+    [ProveedorController::class, 'archivar']
+)->name('proveedores.archivar');
 
 #USUARIOS
 Route::resource('usuarios', UsuarioController::class);

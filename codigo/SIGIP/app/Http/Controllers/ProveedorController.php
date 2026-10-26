@@ -14,6 +14,7 @@ class ProveedorController extends Controller
     public function index(): View
     {
         $proveedores = Proveedor::withCount('productos')
+            ->where('activo', true)
             ->orderBy('nombre')
             ->paginate(10);
 
@@ -107,5 +108,24 @@ class ProveedorController extends Controller
         return redirect()
             ->route('proveedores.index')
             ->with('exito', 'Proveedor eliminado.');
+    }
+
+
+
+    public function archivar(Proveedor $proveedor): RedirectResponse
+    {
+        if (!$proveedor->activo) {
+            return redirect()
+                ->route('proveedores.index')
+                ->with('error', 'El proveedor ya se encuentra archivado.');
+        }
+
+        $proveedor->update([
+            'activo' => false,
+        ]);
+
+        return redirect()
+            ->route('proveedores.index')
+            ->with('exito', 'Proveedor archivado.');
     }
 }
