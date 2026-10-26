@@ -12,6 +12,12 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+
+#RUTA PROVISIONAL DE LOGIN
+Route::get('/login', function () {
+    return view('auth.login');
+});
+
 #CATEGORIAS
 Route::resource('categorias', CategoriaController::class);
 Route::patch(
