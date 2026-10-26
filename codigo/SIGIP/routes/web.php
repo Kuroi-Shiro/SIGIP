@@ -56,5 +56,5 @@ Route::patch(
     [MovimientoController::class, 'cancelar']
 )->name('movimientos.cancelar');
 
-
+Route::get('/dashboard', fn () => view('dashboard.index'))->name('dashboard');
 
