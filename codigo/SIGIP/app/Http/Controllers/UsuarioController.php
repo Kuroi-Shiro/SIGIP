@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Usuario;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
+use App\Http\Requests\ActualizarUsuarioRequest;
+use App\Http\Requests\GuardarUsuarioRequest;
 
 class UsuarioController extends Controller
 {
@@ -27,19 +28,20 @@ class UsuarioController extends Controller
 
 
 
-    public function store(Request $request): RedirectResponse
+    public function store(GuardarUsuarioRequest $request): RedirectResponse
     {
-        Usuario::create([
-            'nombre' => $request->nombre,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'rol' => $request->rol,
-            'activo' => true,
-        ]);
+        $datos = $request->validated();
+
+        unset($datos['password_confirmation']);
+
+        $datos['password'] = Hash::make($datos['password']);
+        $datos['activo'] = true;
+
+        Usuario::create($datos);
 
         return redirect()
             ->route('usuarios.index')
-            ->with('exito', 'Usuario registrado.');
+            ->with('exito', 'Usuario registrado correctamente.');
     }
 
 
@@ -58,25 +60,23 @@ class UsuarioController extends Controller
 
 
 
-    public function update(
-        Request $request,
-        Usuario $usuario
-    ): RedirectResponse {
-        $datos = [
-            'nombre' => $request->nombre,
-            'email' => $request->email,
-            'rol' => $request->rol,
-        ];
+    public function update( ActualizarUsuarioRequest $request, Usuario $usuario): RedirectResponse 
+    {
+        $datos = $request->validated();
 
-        if ($request->filled('password')) {
-            $datos['password'] = Hash::make($request->password);
+        unset($datos['password_confirmation']);
+
+        if (!empty($datos['password'])) {
+            $datos['password'] = Hash::make($datos['password']);
+        } else {
+            unset($datos['password']);
         }
 
         $usuario->update($datos);
 
         return redirect()
             ->route('usuarios.index')
-            ->with('exito', 'Usuario actualizado.');
+            ->with('exito', 'Usuario actualizado correctamente.');
     }
 
 
