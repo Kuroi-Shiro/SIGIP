@@ -5,10 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Movimiento;
 use App\Models\Producto;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
+use App\Http\Requests\ActualizarMovimientoRequest;
+use App\Http\Requests\GuardarMovimientoRequest;
 
 class MovimientoController extends Controller
 {
@@ -34,28 +35,28 @@ class MovimientoController extends Controller
 
 
 
-    public function store(Request $request): RedirectResponse
+    public function store(GuardarMovimientoRequest $request): RedirectResponse
     {
-        DB::transaction(function () use ($request) {
-            $producto = Producto::lockForUpdate()
-                ->findOrFail($request->producto_id);
+        $datos = $request->validated();
 
-            $cantidad = (int) $request->cantidad;
+        DB::transaction(function () use ($datos) {
+            $producto = Producto::lockForUpdate()
+                ->findOrFail($datos['producto_id']);
 
             $this->aplicarMovimiento(
                 $producto,
-                $request->tipo,
-                $cantidad
+                $datos['tipo'],
+                $datos['cantidad']
             );
 
             Movimiento::create([
                 'producto_id' => $producto->id,
-                'usuario_id' => $request->usuario_id,
-                'tipo' => $request->tipo,
-                'cantidad' => $cantidad,
+                'usuario_id' => $datos['usuario_id'],
+                'tipo' => $datos['tipo'],
+                'cantidad' => $datos['cantidad'],
                 'estado' => 'activo',
-                'observaciones' => $request->observaciones,
-                'fecha_movimiento' => $request->fecha_movimiento ?? now(),
+                'observaciones' => $datos['observaciones'] ?? null,
+                'fecha_movimiento' => $datos['fecha_movimiento'] ?? now(),
             ]);
         });
 
@@ -89,11 +90,11 @@ class MovimientoController extends Controller
 
 
 
-    public function update(
-        Request $request,
-        Movimiento $movimiento
-    ): RedirectResponse {
-        DB::transaction(function () use ($request, $movimiento) {
+    public function update( ActualizarMovimientoRequest $request, Movimiento $movimiento): RedirectResponse 
+    {
+        $datos = $request->validated();
+
+        DB::transaction(function () use ($datos, $movimiento) {
             if ($movimiento->estado === 'cancelado') {
                 throw ValidationException::withMessages([
                     'estado' => 'No se puede modificar un movimiento cancelado.',
@@ -110,22 +111,20 @@ class MovimientoController extends Controller
             );
 
             $productoNuevo = Producto::lockForUpdate()
-                ->findOrFail($request->producto_id);
-
-            $cantidadNueva = (int) $request->cantidad;
+                ->findOrFail($datos['producto_id']);
 
             $this->aplicarMovimiento(
                 $productoNuevo,
-                $request->tipo,
-                $cantidadNueva
+                $datos['tipo'],
+                $datos['cantidad']
             );
 
             $movimiento->update([
                 'producto_id' => $productoNuevo->id,
-                'tipo' => $request->tipo,
-                'cantidad' => $cantidadNueva,
-                'observaciones' => $request->observaciones,
-                'fecha_movimiento' => $request->fecha_movimiento,
+                'tipo' => $datos['tipo'],
+                'cantidad' => $datos['cantidad'],
+                'observaciones' => $datos['observaciones'] ?? null,
+                'fecha_movimiento' => $datos['fecha_movimiento'],
             ]);
         });
 
