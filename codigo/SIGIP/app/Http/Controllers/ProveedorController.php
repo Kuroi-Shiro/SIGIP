@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Producto;
 use App\Models\Proveedor;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
+use App\Http\Requests\ActualizarProveedorRequest;
+use App\Http\Requests\GuardarProveedorRequest;
 use Illuminate\View\View;
 
 class ProveedorController extends Controller
@@ -34,23 +35,22 @@ class ProveedorController extends Controller
 
 
 
-    public function store(Request $request): RedirectResponse
+    public function store(GuardarProveedorRequest $request): RedirectResponse
     {
-        $proveedor = Proveedor::create([
-            'nombre' => $request->nombre,
-            'telefono' => $request->telefono,
-            'email' => $request->email,
-            'direccion' => $request->direccion,
-            'activo' => true,
-        ]);
+        $datos = $request->validated();
 
-        if ($request->filled('producto_ids')) {
-            $proveedor->productos()->sync($request->producto_ids);
-        }
+        $productos = $datos['producto_ids'];
+        unset($datos['producto_ids']);
+
+        $datos['activo'] = true;
+
+        $proveedor = Proveedor::create($datos);
+
+        $proveedor->productos()->sync($productos);
 
         return redirect()
             ->route('proveedores.index')
-            ->with('exito', 'Proveedor registrado.');
+            ->with('exito', 'Proveedor registrado correctamente.');
     }
 
 
@@ -80,24 +80,20 @@ class ProveedorController extends Controller
 
 
 
-    public function update(
-        Request $request,
-        Proveedor $proveedor
-    ): RedirectResponse {
-        $proveedor->update([
-            'nombre' => $request->nombre,
-            'telefono' => $request->telefono,
-            'email' => $request->email,
-            'direccion' => $request->direccion,
-        ]);
+    public function update( ActualizarProveedorRequest $request, Proveedor $proveedor ): RedirectResponse 
+    {
+        $datos = $request->validated();
 
-        if ($request->has('producto_ids')) {
-            $proveedor->productos()->sync($request->producto_ids ?? []);
-        }
+        $productos = $datos['producto_ids'];
+        unset($datos['producto_ids']);
+
+        $proveedor->update($datos);
+
+        $proveedor->productos()->sync($productos);
 
         return redirect()
             ->route('proveedores.index')
-            ->with('exito', 'Proveedor actualizado.');
+            ->with('exito', 'Proveedor actualizado correctamente.');
     }
 
 
