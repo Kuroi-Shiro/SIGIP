@@ -13,7 +13,18 @@ return new class extends Migration
     {
         Schema::create('movimientos', function (Blueprint $table) {
             $table->id();
+ 
+            $table->foreignId('producto_id')->constrained('productos')->restrictOnDelete();
+            $table->foreignId('usuario_id')->constrained('usuarios')->restrictOnDelete();
+ 
+            $table->enum('tipo', ['entrada', 'salida']);
+            $table->unsignedInteger('cantidad');
+            $table->enum('estado', ['activo', 'cancelado'])->default('activo');
+            $table->text('observaciones')->nullable();
+            $table->dateTime('fecha_movimiento')->useCurrent();
             $table->timestamps();
+ 
+            $table->index('fecha_movimiento'); 
         });
     }
 
