@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Entrega;
 use App\Models\Producto;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\View\View;
+use App\Http\Requests\ActualizarEntregaRequest;
+use App\Http\Requests\GuardarEntregaRequest;
+use Illuminate\Support\Facades\DB;
 
 class EntregaController extends Controller
 {
@@ -32,31 +34,30 @@ class EntregaController extends Controller
 
 
 
-    public function store(Request $request): RedirectResponse
+    public function store(GuardarEntregaRequest $request): RedirectResponse
     {
-        $entrega = Entrega::create([
-            'usuario_id' => $request->usuario_id,
-            'cliente' => $request->cliente,
-            'telefono_cliente' => $request->telefono_cliente,
-            'destino' => $request->destino,
-            'estado' => $request->estado,
-            'fecha_entrega' => $request->fecha_entrega,
-            'observaciones' => $request->observaciones,
-        ]);
+        $datos = $request->validated();
 
-        $productos = [];
+        $productosSolicitud = $datos['productos'];
+        unset($datos['productos']);
 
-        foreach ($request->productos ?? [] as $producto) {
-            $productos[$producto['producto_id']] = [
-                'cantidad' => $producto['cantidad'],
-            ];
-        }
+        DB::transaction(function () use ($datos, $productosSolicitud) {
+            $entrega = Entrega::create($datos);
 
-        $entrega->productos()->sync($productos);
+            $productos = [];
+
+            foreach ($productosSolicitud as $producto) {
+                $productos[$producto['producto_id']] = [
+                    'cantidad' => $producto['cantidad'],
+                ];
+            }
+
+            $entrega->productos()->sync($productos);
+        });
 
         return redirect()
             ->route('entregas.index')
-            ->with('exito', 'Entrega registrada.');
+            ->with('exito', 'Entrega registrada correctamente.');
     }
 
 
@@ -86,32 +87,34 @@ class EntregaController extends Controller
 
 
 
-    public function update(
-        Request $request,
-        Entrega $entrega
-    ): RedirectResponse {
-        $entrega->update([
-            'cliente' => $request->cliente,
-            'telefono_cliente' => $request->telefono_cliente,
-            'destino' => $request->destino,
-            'estado' => $request->estado,
-            'fecha_entrega' => $request->fecha_entrega,
-            'observaciones' => $request->observaciones,
-        ]);
+    public function update( ActualizarEntregaRequest $request, Entrega $entrega): RedirectResponse 
+    {
+        $datos = $request->validated();
 
-        $productos = [];
+        $productosSolicitud = $datos['productos'];
+        unset($datos['productos']);
 
-        foreach ($request->productos ?? [] as $producto) {
-            $productos[$producto['producto_id']] = [
-                'cantidad' => $producto['cantidad'],
-            ];
-        }
+        DB::transaction(function () use (
+            $datos,
+            $productosSolicitud,
+            $entrega
+        ) {
+            $entrega->update($datos);
 
-        $entrega->productos()->sync($productos);
+            $productos = [];
+
+            foreach ($productosSolicitud as $producto) {
+                $productos[$producto['producto_id']] = [
+                    'cantidad' => $producto['cantidad'],
+                ];
+            }
+
+            $entrega->productos()->sync($productos);
+        });
 
         return redirect()
             ->route('entregas.index')
-            ->with('exito', 'Entrega actualizada.');
+            ->with('exito', 'Entrega actualizada correctamente.');
     }
 
 
