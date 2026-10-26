@@ -18,8 +18,14 @@ Route::resource('proveedores', ProveedorController::class);
 Route::resource('usuarios', UsuarioController::class);
 Route::resource('entregas', EntregaController::class);
 Route::resource('movimientos', MovimientoController::class)->except('destroy');
+
 Route::patch(
     '/movimientos/{movimiento}/cancelar',
     [MovimientoController::class, 'cancelar']
 )->name('movimientos.cancelar');
+
+Route::patch(
+    '/usuarios/{usuario}/archivar',
+    [UsuarioController::class, 'archivar']
+)->name('usuarios.archivar');
 

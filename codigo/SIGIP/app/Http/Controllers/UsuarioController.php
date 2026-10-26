@@ -89,4 +89,23 @@ class UsuarioController extends Controller
             ->route('usuarios.index')
             ->with('exito', 'Usuario eliminado.');
     }
+
+
+
+    public function archivar(Usuario $usuario): RedirectResponse
+    {
+        if (!$usuario->activo) {
+            return redirect()
+                ->route('usuarios.index')
+                ->with('error', 'El usuario ya se encuentra archivado.');
+        }
+
+        $usuario->update([
+            'activo' => false,
+        ]);
+
+        return redirect()
+            ->route('usuarios.index')
+            ->with('exito', 'Usuario archivado.');
+    }
 }
