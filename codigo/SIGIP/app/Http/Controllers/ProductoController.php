@@ -16,6 +16,7 @@ class ProductoController extends Controller
     public function index(): View
     {
         $productos = Producto::with('categoria')
+            ->where('activo', true)
             ->orderBy('nombre')
             ->paginate(10);
 
@@ -109,5 +110,24 @@ class ProductoController extends Controller
         return redirect()
             ->route('productos.index')
             ->with('exito', 'Producto eliminado.');
+    }
+
+
+
+    public function archivar(Producto $producto): RedirectResponse
+    {
+        if (!$producto->activo) {
+            return redirect()
+                ->route('productos.index')
+                ->with('error', 'El producto ya se encuentra archivado.');
+        }
+
+        $producto->update([
+            'activo' => false,
+        ]);
+
+        return redirect()
+            ->route('productos.index')
+            ->with('exito', 'Producto archivado.');
     }
 }

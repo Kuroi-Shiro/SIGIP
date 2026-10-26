@@ -12,20 +12,35 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+#CATEGORIAS
 Route::resource('categorias', CategoriaController::class);
-Route::resource('productos', ProductoController::class);
-Route::resource('proveedores', ProveedorController::class);
-Route::resource('usuarios', UsuarioController::class);
-Route::resource('entregas', EntregaController::class);
-Route::resource('movimientos', MovimientoController::class)->except('destroy');
 
+#PRODUCTOS
+Route::resource('productos', ProductoController::class);
+Route::patch(
+    '/productos/{producto}/archivar',
+    [ProductoController::class, 'archivar']
+)->name('productos.archivar');
+
+#PROVEEDORES
+Route::resource('proveedores', ProveedorController::class);
+
+#USUARIOS
+Route::resource('usuarios', UsuarioController::class);
+Route::patch(
+    '/usuarios/{usuario}/archivar',
+    [UsuarioController::class, 'archivar']
+)->name('usuarios.archivar');
+
+#ENTREGAS
+Route::resource('entregas', EntregaController::class);
+
+#MOVIMIENTOS
+Route::resource('movimientos', MovimientoController::class)->except('destroy');
 Route::patch(
     '/movimientos/{movimiento}/cancelar',
     [MovimientoController::class, 'cancelar']
 )->name('movimientos.cancelar');
 
-Route::patch(
-    '/usuarios/{usuario}/archivar',
-    [UsuarioController::class, 'archivar']
-)->name('usuarios.archivar');
+
 
