@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Categoria;
 use App\Models\Producto;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
+
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use App\Http\Requests\ActualizarProductoRequest;
+use App\Http\Requests\GuardarProductoRequest;
 
 class ProductoController extends Controller
 {
@@ -33,29 +35,22 @@ class ProductoController extends Controller
 
 
 
-    public function store(Request $request): RedirectResponse
+    public function store(GuardarProductoRequest $request): RedirectResponse
     {
-        $datos = [
-            'categoria_id' => $request->categoria_id,
-            'codigo' => $request->codigo,
-            'nombre' => $request->nombre,
-            'descripcion' => $request->descripcion,
-            'precio' => $request->precio,
-            'stock_actual' => $request->stock_actual,
-            'stock_minimo' => $request->stock_minimo,
-            'activo' => true,
-        ];
+        $datos = $request->validated();
 
         if ($request->hasFile('imagen')) {
             $datos['imagen'] = $request->file('imagen')
                 ->store('productos', 'public');
         }
 
+        $datos['activo'] = true;
+
         Producto::create($datos);
 
         return redirect()
             ->route('productos.index')
-            ->with('exito', 'Producto registrado.');
+            ->with('exito', 'Producto registrado correctamente.');
     }
 
 
@@ -80,19 +75,8 @@ class ProductoController extends Controller
 
 
 
-    public function update(
-        Request $request,
-        Producto $producto
-    ): RedirectResponse {
-        $datos = [
-            'categoria_id' => $request->categoria_id,
-            'codigo' => $request->codigo,
-            'nombre' => $request->nombre,
-            'descripcion' => $request->descripcion,
-            'precio' => $request->precio,
-            'stock_actual' => $request->stock_actual,
-            'stock_minimo' => $request->stock_minimo,
-        ];
+    public function update( ActualizarProductoRequest $request, Producto $producto): RedirectResponse {
+        $datos = $request->validated();
 
         if ($request->hasFile('imagen')) {
             if ($producto->imagen) {
@@ -101,13 +85,15 @@ class ProductoController extends Controller
 
             $datos['imagen'] = $request->file('imagen')
                 ->store('productos', 'public');
+        } else {
+            unset($datos['imagen']);
         }
 
         $producto->update($datos);
 
         return redirect()
             ->route('productos.index')
-            ->with('exito', 'Producto actualizado.');
+            ->with('exito', 'Producto actualizado correctamente.');
     }
 
 
