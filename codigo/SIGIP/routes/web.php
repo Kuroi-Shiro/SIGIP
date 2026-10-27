@@ -24,6 +24,10 @@ Route::patch(
     '/categorias/{categoria}/archivar',
     [CategoriaController::class, 'archivar']
 )->name('categorias.archivar');
+Route::patch(
+    '/categorias/{categoria}/restaurar',
+    [CategoriaController::class, 'restaurar']
+)->name('categorias.restaurar');
 
 #PRODUCTOS
 Route::resource('productos', ProductoController::class);
