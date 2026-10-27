@@ -17,7 +17,13 @@ class CategoriaController extends Controller
             ->orderBy('nombre')
             ->paginate(10);
 
-        return view('categorias.index', compact('categorias'));
+
+        $archivadas = Categoria::withCount('productos')
+            ->where('activo', false)
+            ->orderBy('nombre')
+            ->get();
+
+        return view('categorias.index', compact('categorias', 'archivadas'));
     }
 
 
@@ -93,5 +99,20 @@ class CategoriaController extends Controller
         return redirect()
             ->route('categorias.index')
             ->with('exito', 'Categoría archivada.');
+    }
+
+    public function restaurar(Categoria $categoria): RedirectResponse
+    {
+        if ($categoria->activo) {
+            return redirect()
+                ->route('categorias.index')
+                ->with('error', 'La categoría ya se encuentra activa.');
+        }
+
+        $categoria->update(['activo' => true]);
+
+        return redirect()
+            ->route('categorias.index')
+            ->with('exito', 'Categoría restaurada.');
     }
 }
