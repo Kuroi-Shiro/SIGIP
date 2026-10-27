@@ -39,7 +39,7 @@
 
 @php
     $usuario = auth()->user();
-    $nombreUsuario = $usuario->nombre ?? $usuario->name ?? 'Jorge Hernández';
+    $nombreUsuario = $usuario->nombre ?? $usuario->name ?? 'Administrador';
     $rolUsuario = $usuario->rol ?? 'Administrador';
     $iniciales = collect(explode(' ', $nombreUsuario))
         ->filter()
