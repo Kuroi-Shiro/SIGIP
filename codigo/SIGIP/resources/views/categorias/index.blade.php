@@ -9,7 +9,8 @@
         <div>
             <h1 class="font-display text-2xl font-semibold mb-1">Categorías</h1>
             <p class="text-sm text-muted">
-                {{ $categorias->total() }} {{ $categorias->total() === 1 ? 'categoría activa' : 'categorías activas' }}
+                {{ $categorias->total() }} {{ $categorias->total() === 1 ? 'activa' : 'activas' }}
+                · {{ $archivadas->count() }} {{ $archivadas->count() === 1 ? 'archivada' : 'archivadas' }}
             </p>
         </div>
         <a href="{{ route('categorias.create') }}"
@@ -67,5 +68,34 @@
     <div>
         {{ $categorias->links() }}
     </div>
+    @if($archivadas->isNotEmpty())
+        <div>
+            <div class="text-sm font-medium text-muted mb-3">Archivadas ({{ $archivadas->count() }})</div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                @foreach($archivadas as $categoria)
+                    <div class="rounded-xl p-5 border border-dashed border-line bg-surface/50">
+                        <div class="flex items-start justify-between mb-3">
+                            <div>
+                                <div class="font-medium text-sm text-muted">{{ $categoria->nombre }}</div>
+                                <p class="text-xs text-muted/60 mt-0.5">{{ $categoria->descripcion ?: 'Sin descripción' }}</p>
+                            </div>
+                            <span class="text-xs px-2 py-0.5 rounded-full font-medium flex-shrink-0 ml-2 bg-muted/15 text-muted">Archivada</span>
+                        </div>
+
+                        <form action="{{ route('categorias.restaurar', $categoria) }}" method="POST"
+                            onsubmit="return confirm('¿Restaurar esta categoría?');">
+                            @csrf
+                            @method('PATCH')
+                            <button type="submit"
+                                    class="text-xs px-2.5 py-1 rounded-lg border border-line text-muted hover:border-success hover:text-success transition-colors">
+                                Restaurar
+                            </button>
+                        </form>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    @endif
 </div>
 @endsection
