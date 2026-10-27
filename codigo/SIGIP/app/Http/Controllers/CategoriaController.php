@@ -36,17 +36,15 @@ class CategoriaController extends Controller
 
     public function store(GuardarCategoriaRequest $request): RedirectResponse
     {
+        try {
+            Categoria::create([...$request->validated(), 'activo' => true]);
+        } catch (Throwable $e) {
+            return $this->falloAlGuardar($e, 'registrar');
+        }
 
-        Categoria::create([
-            ...$request->validated(),
-            'activo' => true,
-        ]);
-
-        return redirect()
-            ->route('categorias.index')
-            ->with('exito', 'Categoría registrada.');
+        return redirect()->route('categorias.index')->with('exito', 'Categoría registrada.');
     }
-
+    
     public function show(Categoria $categoria): View
     {
         $categoria->load('productos');
@@ -60,26 +58,26 @@ class CategoriaController extends Controller
 
     }
 
-    public function update(
+    public function update(ActualizarCategoriaRequest $request, Categoria $categoria): RedirectResponse
+    {
+        try {
+            $categoria->update($request->validated());
+        } catch (Throwable $e) {
+            return $this->falloAlGuardar($e, 'actualizar');
+        }
 
-        ActualizarCategoriaRequest $request,
-        Categoria $categoria
-
-    ): RedirectResponse {
-        $categoria->update($request->validated());
-
-        return redirect()
-            ->route('categorias.index')
-            ->with('exito', 'Categoría actualizada.');
+        return redirect()->route('categorias.index')->with('exito', 'Categoría actualizada.');
     }
 
     public function destroy(Categoria $categoria): RedirectResponse
     {
-        $categoria->delete();
+        try {
+            $categoria->delete();
+        } catch (Throwable $e) {
+            return $this->falloAlGuardar($e, 'eliminar');
+        }
 
-        return redirect()
-            ->route('categorias.index')
-            ->with('exito', 'Categoría eliminada.');
+        return redirect()->route('categorias.index')->with('exito', 'Categoría eliminada.');
     }
 
 
@@ -92,9 +90,11 @@ class CategoriaController extends Controller
                 ->with('error', 'La categoría ya se encuentra archivada.');
         }
 
-        $categoria->update([
-            'activo' => false,
-        ]);
+        try{
+            $categoria->update(['activo' => false,]);
+        } catch (Throwable $e){
+            return $this->falloAlGuardar($e, 'archivar');
+        }
 
         return redirect()
             ->route('categorias.index')
@@ -109,10 +109,26 @@ class CategoriaController extends Controller
                 ->with('error', 'La categoría ya se encuentra activa.');
         }
 
-        $categoria->update(['activo' => true]);
+        try{
+            $categoria->update(['activo' => true]);
+        } catch (Throwable $e){
+            return $this->falloAlGuardar($e, 'restaurar');
+        }
 
         return redirect()
             ->route('categorias.index')
             ->with('exito', 'Categoría restaurada.');
+    }
+
+    private function falloAlGuardar(Throwable $e, string $accion): RedirectResponse
+    {
+        Log::error("Categorías: error al {$accion}", ['mensaje' => $e->getMessage()]);
+
+        // SQLSTATE 23000 = violación de integridad (p. ej. nombre duplicado por doble envío)
+        $mensaje = ($e instanceof QueryException && $e->getCode() === '23000')
+            ? 'No se pudo completar la operación porque entra en conflicto con otros datos (por ejemplo, un nombre ya registrado).'
+            : "Ocurrió un error al {$accion} la categoría. Intenta de nuevo.";
+
+        return back()->withInput()->with('error', $mensaje);
     }
 }
