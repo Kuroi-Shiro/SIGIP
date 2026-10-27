@@ -26,7 +26,7 @@ class EntregaFactory extends Factory
             'cliente' => $this->faker->name(),
             'telefono_cliente' => fake()->numerify('###-###-####'),
             'destino' => fake()->address(),
-            'estado' => fake()->randomElement(['pendiente', 'en_proceso', 'entregado']),
+            'estado' => fake()->randomElement(['pendiente', 'completado', 'cancelado']),
             'fecha_entrega' => fake()->dateTimeBetween('-1 month', '+2 weeks'),
             'observaciones' => fake()->optional()->sentence(),
         ];
