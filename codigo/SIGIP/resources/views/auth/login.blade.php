@@ -177,7 +177,7 @@
             almacenamiento.setItem('usuario_email', usuario.email);
             almacenamiento.setItem('usuario_rol', usuario.rol);
 
-            window.location.href = "{{ route('dashboard') }}";
+            window.location.href = usuario.rol === 'Administrador' ? '/dashboard' : '/categorias';
         }
 
 
