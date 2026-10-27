@@ -28,7 +28,7 @@ class MovimientoFactory extends Factory
             'usuario_id' => Usuario::inRandomOrder()->first()?->id ?? Usuario::factory(),
             'tipo' => fake()->randomElement(['entrada', 'salida']),
             'cantidad' => fake()->numberBetween(1, 100),
-            'estado' => fake()->randomElement(['completado', 'pendiente', 'cancelado']),
+            'estado' => fake()->randomElement(['activo', 'cancelado']),
             'observaciones' => fake()->optional()->sentence(),
             'fecha_movimiento' => fake()->dateTimeBetween('-1 month', 'now'),
         ];
