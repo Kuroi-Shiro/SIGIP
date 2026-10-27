@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -38,75 +37,84 @@
     </script>
 </head>
 
-<body class="bg-surface font-sans text-ink flex items-center justify-center min-h-screen p-4">
-    <div class="max-w-md w-full">
-        <div class="text-center mb-6">
-            <div class="w-12 h-12 mx-auto mb-3 rounded-xl bg-primary text-white font-display font-bold text-2xl flex items-center justify-center shadow-sm">
+
+
+<body class="bg-surface font-sans text-ink min-h-screen flex justify-center px-4">
+    <div class="w-full max-w-sm pt-6 sm:pt-10">
+
+        <div class="text-center mb-9">
+            <div class="w-12 h-12 mx-auto rounded-xl bg-sidebar text-white font-display font-bold text-2xl flex items-center justify-center">
                 S
             </div>
-            <h1 class="font-display text-3xl font-semibold text-ink">SIGIP</h1>
-            <p class="text-sm text-muted mt-1">Sistema de Gestión de Inventario y Pedidos</p>
+            <h1 class="mt-3 text-lg font-semibold text-ink">Spacio Muebles · SIGIP</h1>
         </div>
 
-        <div class="bg-white border border-line rounded-xl shadow-sm p-8">
-            <div class="mb-6">
-                <h2 class="font-display text-xl font-semibold text-ink">Iniciar sesión</h2>
-                <p class="text-sm text-muted mt-1">Ingresa tus credenciales para acceder al sistema</p>
-            </div>
+        <div class="mb-8">
+            <h2 class="font-display text-2xl font-semibold text-ink">Iniciar sesión</h2>
+            <p class="text-sm text-muted mt-1">Ingresa tus credenciales para continuar</p>
+        </div>
 
-            <div id="mensaje-error" class="hidden bg-danger/10 border border-danger/30 text-danger px-4 py-3 rounded-lg mb-4">
-                <p class="font-semibold text-sm">Error de autenticación</p>
-                <p id="texto-error" class="text-xs mt-1"></p>
-            </div>
+        <div id="mensaje-error" class="hidden bg-danger/10 border border-danger/30 text-danger px-4 py-3 rounded-lg mb-4">
+            <p class="font-semibold text-sm">Error de autenticación</p>
+            <p id="texto-error" class="text-xs mt-1"></p>
+        </div>
 
-            <form id="form-login" class="space-y-4" onsubmit="validarLogin(event)" novalidate>
-                <div>
-                    <label for="email" class="block text-sm font-medium text-ink mb-1">Correo electrónico</label>
-                    <input type="email" id="email" name="email" required autofocus
-                        class="w-full border border-line rounded-lg px-3 py-2.5 text-sm bg-white text-ink placeholder:text-muted/60 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
-                        placeholder="ejemplo@sigip.com">
-                </div>
 
-                <div>
-                    <label for="password" class="block text-sm font-medium text-ink mb-1">Contraseña</label>
-                    <input type="password" id="password" name="password" required
-                        class="w-full border border-line rounded-lg px-3 py-2.5 text-sm bg-white text-ink placeholder:text-muted/60 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
-                        placeholder="••••••••">
-                </div>
 
-                <label class="flex items-center text-sm text-muted">
-                    <input type="checkbox" id="remember"
-                        class="rounded border-line text-primary focus:ring-primary">
-                    <span class="ml-2">Recordar sesión</span>
+        <form id="form-login" class="space-y-4" onsubmit="validarLogin(event)" novalidate>
+            <div>
+                <label for="email" class="block text-sm font-medium text-ink mb-1.5">
+                    Correo electrónico
                 </label>
-
-                <button type="submit"
-                    class="w-full bg-primary hover:bg-primary-dark text-white font-semibold py-2.5 rounded-lg text-sm transition-colors shadow-sm">
-                    Iniciar sesión
-                </button>
-            </form>
-
-            <div class="flex items-center gap-3 my-6">
-                <div class="flex-1 border-t border-line"></div>
-                <span class="text-xs text-muted">Accesos rápidos de prueba</span>
-                <div class="flex-1 border-t border-line"></div>
+                <input type="email" id="email" name="email" required autofocus
+                    class="w-full bg-white border border-line rounded-lg px-4 py-3 text-sm text-ink placeholder:text-muted/70 focus:outline-none focus:border-sidebar focus:ring-1 focus:ring-sidebar transition"
+                    placeholder="usuario@spacio.mx">
             </div>
 
-            <div class="grid grid-cols-2 gap-3">
-                <button type="button" onclick="credencialesUsuario()"
-                    class="border border-line bg-white hover:bg-surface text-ink font-medium py-2.5 rounded-lg text-sm transition-colors">
-                    Usuario
+            <div>
+                <label for="password" class="block text-sm font-medium text-ink mb-1.5">
+                    Contraseña
+                </label>
+                <input type="password" id="password" name="password" required
+                    class="w-full bg-white border border-line rounded-lg px-4 py-3 text-sm text-ink placeholder:text-muted/70 focus:outline-none focus:border-sidebar focus:ring-1 focus:ring-sidebar transition"
+                    placeholder="••••••••">
+            </div>
+
+            <label class="flex items-center text-sm text-muted">
+                <input type="checkbox" id="remember"
+                    class="rounded border-line text-sidebar focus:ring-sidebar">
+                <span class="ml-2">Recordar sesión</span>
+            </label>
+
+            <button type="submit"
+                class="w-full bg-sidebar hover:bg-[#263838] text-white font-semibold py-3 rounded-lg text-sm transition-colors">
+                Entrar al sistema
+            </button>
+        </form>
+
+
+
+        <div class="mt-6">
+            <p class="text-xs text-muted text-center mb-3">Acceso rápido para prototipo:</p>
+
+            <div class="grid grid-cols-2 gap-2">
+                <button type="button" onclick="credencialesAdmin()"
+                    class="border border-line hover:border-muted bg-transparent text-ink font-medium py-2.5 rounded-lg text-sm transition-colors">
+                    Admin demo
                 </button>
 
-                <button type="button" onclick="credencialesAdmin()"
-                    class="border border-primary/30 bg-primary/10 hover:bg-primary/20 text-primary font-semibold py-2.5 rounded-lg text-sm transition-colors">
-                    Admin
+                <button type="button" onclick="credencialesUsuario()"
+                    class="border border-line hover:border-muted bg-transparent text-ink font-medium py-2.5 rounded-lg text-sm transition-colors">
+                    Empleado demo
                 </button>
             </div>
         </div>
-
-        <p class="text-center text-xs text-muted mt-4">Spacio Muebles · SIGIP v1.0</p>
     </div>
+
+
+
+
+
 
     <script>
         const usuarioPrueba = {
@@ -116,6 +124,7 @@
             rol: 'Empleado'
         };
 
+
         const adminPrueba = {
             email: 'admin@sigip.com',
             password: 'admin123',
@@ -123,17 +132,20 @@
             rol: 'Administrador'
         };
 
+
         function credencialesUsuario() {
             document.getElementById('email').value = usuarioPrueba.email;
             document.getElementById('password').value = usuarioPrueba.password;
             ocultarError();
         }
 
+
         function credencialesAdmin() {
             document.getElementById('email').value = adminPrueba.email;
             document.getElementById('password').value = adminPrueba.password;
             ocultarError();
         }
+
 
         function validarLogin(event) {
             event.preventDefault();
@@ -168,10 +180,12 @@
             window.location.href = "{{ route('dashboard') }}";
         }
 
+
         function mostrarError(mensaje) {
             document.getElementById('texto-error').textContent = mensaje;
             document.getElementById('mensaje-error').classList.remove('hidden');
         }
+
 
         function ocultarError() {
             document.getElementById('mensaje-error').classList.add('hidden');
