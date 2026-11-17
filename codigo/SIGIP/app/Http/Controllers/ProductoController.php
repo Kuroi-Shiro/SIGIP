@@ -132,4 +132,21 @@ class ProductoController extends Controller
             ->route('productos.index')
             ->with('exito', 'Producto archivado.');
     }
+
+    public function restaurar(Producto $producto): RedirectResponse
+    {
+        if ($producto->activo) {
+            return redirect()
+                ->route('productos.index')
+                ->with('error', 'El producto ya se encuentra activo.');
+        }
+
+        $producto->update([
+            'activo' => true,
+        ]);
+
+        return redirect()
+            ->route('productos.index')
+            ->with('exito', 'Producto restaurado.');
+    }
 }

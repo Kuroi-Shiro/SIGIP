@@ -35,6 +35,10 @@ Route::patch(
     '/productos/{producto}/archivar',
     [ProductoController::class, 'archivar']
 )->name('productos.archivar');
+Route::patch(
+    '/productos/{producto}/restaurar',
+    [ProductoController::class, 'restaurar']
+)->name('productos.restaurar');
 
 #PROVEEDORES
 Route::resource('proveedores', ProveedorController::class);
