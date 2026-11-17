@@ -20,7 +20,9 @@ class ProductoController extends Controller
             ->orderBy('nombre')
             ->paginate(10);
 
-        return view('productos.index', compact('productos'));
+        $archivados = Producto::where('activo', false)->get();
+
+        return view('productos.index', compact('productos', 'archivados'));
     }
 
 
