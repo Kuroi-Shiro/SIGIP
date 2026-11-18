@@ -83,6 +83,12 @@ class UsuarioController extends Controller
 
     public function destroy(Usuario $usuario): RedirectResponse
     {
+        if ($usuario->movimientos()->exists() || $usuario->entregas()->exists()) {
+            return redirect()
+                ->route('usuarios.index')
+                ->with('error', 'No se puede eliminar un usuario con movimientos o entregas. Archívalo en su lugar.');
+        }
+
         $usuario->delete();
 
         return redirect()

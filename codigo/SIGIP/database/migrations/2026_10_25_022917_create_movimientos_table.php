@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
  
             $table->foreignId('producto_id')->constrained('productos')->restrictOnDelete();
-            $table->foreignId('usuario_id')->constrained('usuarios')->restrictOnDelete();
+            $table->foreignId('usuario_id')->constrained('usuarios', 'usuario_id')->restrictOnDelete();
  
             $table->enum('tipo', ['entrada', 'salida']);
             $table->unsignedInteger('cantidad');

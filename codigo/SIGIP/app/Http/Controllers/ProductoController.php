@@ -25,8 +25,6 @@ class ProductoController extends Controller
         return view('productos.index', compact('productos', 'archivados'));
     }
 
-
-
     public function create(): View
     {
         $categorias = Categoria::where('activo', true)
@@ -35,8 +33,6 @@ class ProductoController extends Controller
 
         return view('productos.create', compact('categorias'));
     }
-
-
 
     public function store(GuardarProductoRequest $request): RedirectResponse
     {
@@ -56,16 +52,12 @@ class ProductoController extends Controller
             ->with('exito', 'Producto registrado correctamente.');
     }
 
-
-
     public function show(Producto $producto): View
     {
         $producto->load(['categoria', 'proveedores']);
 
         return view('productos.show', compact('producto'));
     }
-
-
 
     public function edit(Producto $producto): View
     {
@@ -76,9 +68,8 @@ class ProductoController extends Controller
         return view('productos.edit', compact('producto', 'categorias'));
     }
 
-
-
-    public function update( ActualizarProductoRequest $request, Producto $producto): RedirectResponse {
+    public function update(ActualizarProductoRequest $request, Producto $producto): RedirectResponse
+    {
         $datos = $request->validated();
 
         if ($request->hasFile('imagen')) {
@@ -99,10 +90,15 @@ class ProductoController extends Controller
             ->with('exito', 'Producto actualizado correctamente.');
     }
 
-
-
     public function destroy(Producto $producto): RedirectResponse
     {
+        // movimientos y entregas referencian al producto (restrictOnDelete): se archiva en su lugar
+        if ($producto->movimientos()->exists() || $producto->entregas()->exists()) {
+            return redirect()
+                ->route('productos.index')
+                ->with('error', 'No se puede eliminar un producto con movimientos o entregas. Archívalo en su lugar.');
+        }
+
         if ($producto->imagen) {
             Storage::disk('public')->delete($producto->imagen);
         }
@@ -113,8 +109,6 @@ class ProductoController extends Controller
             ->route('productos.index')
             ->with('exito', 'Producto eliminado.');
     }
-
-
 
     public function archivar(Producto $producto): RedirectResponse
     {
@@ -131,5 +125,20 @@ class ProductoController extends Controller
         return redirect()
             ->route('productos.index')
             ->with('exito', 'Producto archivado.');
+    }
+
+    public function restaurar(Producto $producto): RedirectResponse
+    {
+        if ($producto->activo) {
+            return redirect()
+                ->route('productos.index')
+                ->with('error', 'El producto ya se encuentra activo.');
+        }
+
+        $producto->update(['activo' => true]);
+
+        return redirect()
+            ->route('productos.index')
+            ->with('exito', 'Producto restaurado.');
     }
 }

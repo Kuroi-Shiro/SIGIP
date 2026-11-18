@@ -30,7 +30,7 @@ class Entrega extends Model
 
     public function usuario(): BelongsTo
     {
-        return $this->belongsTo(Usuario::class);
+        return $this->belongsTo(Usuario::class, 'usuario_id', 'usuario_id');
     }
     public function productos(): BelongsToMany
     {

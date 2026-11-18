@@ -37,7 +37,7 @@ class ActualizarProductoRequest extends FormRequest
             'codigo' => [
                 'required',
                 'string',
-                'max:255',
+                'max:50',
                 Rule::unique('productos', 'codigo')
                     ->ignore($this->route('producto')),
             ],
@@ -91,7 +91,7 @@ class ActualizarProductoRequest extends FormRequest
 
             'codigo.required' => 'El código del producto es obligatorio.',
             'codigo.string' => 'El código debe ser texto.',
-            'codigo.max' => 'El código no puede exceder los 255 caracteres.',
+            'codigo.max' => 'El código no puede exceder los 50 caracteres.',
             'codigo.unique' => 'El código ya se encuentra registrado.',
 
             'nombre.required' => 'El nombre del producto es obligatorio.',

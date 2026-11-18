@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('entregas', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('usuario_id')->constrained('usuarios')->restrictOnDelete();
+            $table->foreignId('usuario_id')->constrained('usuarios', 'usuario_id')->restrictOnDelete();
  
             $table->string('cliente');
             $table->string('telefono_cliente', 20)->nullable();

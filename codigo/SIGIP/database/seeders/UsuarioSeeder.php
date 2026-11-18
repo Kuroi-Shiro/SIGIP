@@ -14,17 +14,23 @@ class UsuarioSeeder extends Seeder
      */
     public function run(): void
     {
-        //
         Usuario::create([
             'nombre' => 'Admin SIGIP',
             'email' => 'admin@sigip.com',
             'password' => Hash::make('password1237'),
-            'rol' => 'admin',
+            'rol' => 'Administrador',
             'activo' => true,
         ]);
 
-        //usuarios de prueba
-        Usuario::factory(10)->create();
+        Usuario::create([
+            'nombre' => 'Usuario Demo',
+            'email' => 'usuario@sigip.com',
+            'password' => Hash::make('password1237'),
+            'rol' => 'Empleado',
+            'activo' => true,
+        ]);
 
+        // usuarios de prueba
+        Usuario::factory(10)->create();
     }
 }
