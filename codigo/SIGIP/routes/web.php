@@ -24,6 +24,16 @@ Route::middleware('auth')->group(function () {
         ->name('categorias.archivar');
     Route::patch('/categorias/{categoria}/restaurar', [CategoriaController::class, 'restaurar'])
         ->name('categorias.restaurar');
+#PRODUCTOS
+Route::resource('productos', ProductoController::class);
+Route::patch(
+    '/productos/{producto}/archivar',
+    [ProductoController::class, 'archivar']
+)->name('productos.archivar');
+Route::patch(
+    '/productos/{producto}/restaurar',
+    [ProductoController::class, 'restaurar']
+)->name('productos.restaurar');
 
     # PRODUCTOS
     Route::resource('productos', ProductoController::class);

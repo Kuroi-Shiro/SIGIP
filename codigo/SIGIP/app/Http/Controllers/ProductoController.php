@@ -135,7 +135,9 @@ class ProductoController extends Controller
                 ->with('error', 'El producto ya se encuentra activo.');
         }
 
-        $producto->update(['activo' => true]);
+        $producto->update([
+            'activo' => true,
+        ]);
 
         return redirect()
             ->route('productos.index')
