@@ -27,7 +27,7 @@ class GuardarMovimientoRequest extends FormRequest
             'usuario_id' => [
                 'required',
                 'integer',
-                Rule::exists('usuarios', 'id')
+                Rule::exists('usuarios', 'usuario_id')
                     ->where('activo', true),
             ],
 
