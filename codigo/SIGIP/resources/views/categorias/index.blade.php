@@ -19,81 +19,119 @@
         </a>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        @forelse($categorias as $categoria)
-            <div class="bg-white border border-line hover:border-primary transition-colors rounded-xl p-5 flex flex-col">
-                <div class="flex items-start justify-between mb-3">
-                    <div>
-                        <a href="{{ route('categorias.show', $categoria) }}" class="font-semibold text-sm hover:text-primary transition-colors">
-                            {{ $categoria->nombre }}
-                        </a>
-                        <p class="text-xs text-muted mt-0.5">{{ $categoria->descripcion ?: 'Sin descripción' }}</p>
-                    </div>
-                    <span class="text-xs px-2 py-0.5 rounded-full font-medium flex-shrink-0 ml-2 bg-success/10 text-success">Activa</span>
-                </div>
+    {{-- Activas --}}
+    <div class="bg-white border border-line rounded-xl overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full text-sm">
+                <thead>
+                    <tr class="text-left text-xs font-medium text-muted uppercase bg-surface/30 border-b border-line">
+                        <th class="py-3 px-4">Nombre</th>
+                        <th class="py-3 px-4">Descripción</th>
+                        <th class="py-3 px-4">Productos</th>
+                        <th class="py-3 px-4">Estado</th>
+                        <th class="py-3 px-4 text-right">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-line">
+                    @forelse($categorias as $categoria)
+                        <tr class="hover:bg-surface/30 transition-colors">
+                            <td class="py-3 px-4 font-medium text-ink">
+                                <a href="{{ route('categorias.show', $categoria) }}" class="hover:text-primary transition-colors">
+                                    {{ $categoria->nombre }}
+                                </a>
+                            </td>
+                            <td class="py-3 px-4 text-muted max-w-xs truncate">
+                                {{ $categoria->descripcion ?: 'Sin descripción' }}
+                            </td>
+                            <td class="py-3 px-4 font-mono text-xs">{{ $categoria->productos_count }}</td>
+                            <td class="py-3 px-4">
+                                <span class="text-xs px-2 py-0.5 rounded-full font-medium bg-success/10 text-success">Activa</span>
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="flex justify-end gap-3 font-medium text-xs">
+                                    <a href="{{ route('categorias.show', $categoria) }}" class="text-info hover:underline">Ver</a>
+                                    <a href="{{ route('categorias.edit', $categoria) }}" class="text-primary hover:underline">Editar</a>
 
-                <div class="mt-auto flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-line">
-                    <p class="text-xs text-muted">
-                        <span class="font-mono font-semibold text-ink">{{ $categoria->productos_count }}</span>
-                        {{ $categoria->productos_count === 1 ? 'producto' : 'productos' }}
-                    </p>
+                                    <form action="{{ route('categorias.archivar', $categoria) }}" method="POST" class="inline"
+                                          onsubmit="return confirm('¿Archivar esta categoría?');">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit" class="text-muted hover:text-ink hover:underline">Archivar</button>
+                                    </form>
 
-                    <div class="flex items-center gap-3 text-xs font-medium">
-                        <a href="{{ route('categorias.show', $categoria) }}" class="text-info hover:underline">Ver</a>
-                        <a href="{{ route('categorias.edit', $categoria) }}" class="text-primary hover:underline">Editar</a>
+                                    <form action="{{ route('categorias.destroy', $categoria) }}" method="POST" class="inline"
+                                          onsubmit="return confirm('¿Eliminar esta categoría?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-danger hover:underline">Eliminar</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" class="py-12 text-sm text-center text-muted">
+                                No hay categorías activas registradas.
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
 
-                        <form action="{{ route('categorias.archivar', $categoria) }}" method="POST" class="inline"
-                              onsubmit="return confirm('¿Archivar esta categoría?');">
-                            @csrf
-                            @method('PATCH')
-                            <button type="submit" class="text-muted hover:text-ink hover:underline">Archivar</button>
-                        </form>
-
-                        <form action="{{ route('categorias.destroy', $categoria) }}" method="POST" class="inline"
-                              onsubmit="return confirm('¿Eliminar esta categoría?');">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="text-danger hover:underline">Eliminar</button>
-                        </form>
-                    </div>
-                </div>
+        @if($categorias->hasPages())
+            <div class="p-4 border-t border-line">
+                {{ $categorias->links() }}
             </div>
-        @empty
-            <div class="col-span-full text-center py-12 text-sm text-muted bg-white rounded-xl border border-dashed border-line">
-                No hay categorías activas registradas.
-            </div>
-        @endforelse
+        @endif
     </div>
 
-    <div>
-        {{ $categorias->links() }}
-    </div>
+    {{-- Archivadas --}}
     @if($archivadas->isNotEmpty())
         <div>
             <div class="text-sm font-medium text-muted mb-3">Archivadas ({{ $archivadas->count() }})</div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                @foreach($archivadas as $categoria)
-                    <div class="rounded-xl p-5 border border-dashed border-line bg-surface/50">
-                        <div class="flex items-start justify-between mb-3">
-                            <div>
-                                <div class="font-medium text-sm text-muted">{{ $categoria->nombre }}</div>
-                                <p class="text-xs text-muted/60 mt-0.5">{{ $categoria->descripcion ?: 'Sin descripción' }}</p>
-                            </div>
-                            <span class="text-xs px-2 py-0.5 rounded-full font-medium flex-shrink-0 ml-2 bg-muted/15 text-muted">Archivada</span>
-                        </div>
-
-                        <form action="{{ route('categorias.restaurar', $categoria) }}" method="POST"
-                            onsubmit="return confirm('¿Restaurar esta categoría?');">
-                            @csrf
-                            @method('PATCH')
-                            <button type="submit"
-                                    class="text-xs px-2.5 py-1 rounded-lg border border-line text-muted hover:border-success hover:text-success transition-colors">
-                                Restaurar
-                            </button>
-                        </form>
-                    </div>
-                @endforeach
+            <div class="border border-dashed border-line bg-surface/50 rounded-xl overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full text-sm">
+                        <thead>
+                            <tr class="text-left text-xs font-medium text-muted uppercase border-b border-line">
+                                <th class="py-3 px-4">Nombre</th>
+                                <th class="py-3 px-4">Descripción</th>
+                                <th class="py-3 px-4">Productos</th>
+                                <th class="py-3 px-4">Estado</th>
+                                <th class="py-3 px-4 text-right">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-line">
+                            @foreach($archivadas as $categoria)
+                                <tr>
+                                    <td class="py-3 px-4 font-medium text-muted">{{ $categoria->nombre }}</td>
+                                    <td class="py-3 px-4 text-muted/60 max-w-xs truncate">
+                                        {{ $categoria->descripcion ?: 'Sin descripción' }}
+                                    </td>
+                                    <td class="py-3 px-4 font-mono text-xs text-muted">{{ $categoria->productos_count }}</td>
+                                    <td class="py-3 px-4">
+                                        <span class="text-xs px-2 py-0.5 rounded-full font-medium bg-muted/15 text-muted">Archivada</span>
+                                    </td>
+                                    <td class="py-3 px-4">
+                                        <div class="flex justify-end gap-3 font-medium text-xs">
+                                            <form action="{{ route('categorias.restaurar', $categoria) }}" method="POST"
+                                                  onsubmit="return confirm('¿Restaurar esta categoría?');">
+                                                @csrf
+                                                @method('PATCH')
+                                                <button type="submit"
+                                                        class="px-2.5 py-1 rounded-lg border border-line text-muted hover:border-success hover:text-success transition-colors">
+                                                    Restaurar
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     @endif
