@@ -1,34 +1,29 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoriaController;
+use App\Http\Controllers\EntregaController;
+use App\Http\Controllers\MovimientoController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\ProveedorController;
-use App\Http\Controllers\MovimientoController;
-use App\Http\Controllers\EntregaController;
 use App\Http\Controllers\UsuarioController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
+// El login (GET/POST /login) y el logout (POST /logout) los registra Fortify.
 
-#RUTA PROVISIONAL DE LOGIN
-Route::get('/login', function () {
-    return view('auth.login');
-})->name('login');
+Route::middleware('auth')->group(function () {
 
-#CATEGORIAS
-Route::resource('categorias', CategoriaController::class);
-Route::patch(
-    '/categorias/{categoria}/archivar',
-    [CategoriaController::class, 'archivar']
-)->name('categorias.archivar');
-Route::patch(
-    '/categorias/{categoria}/restaurar',
-    [CategoriaController::class, 'restaurar']
-)->name('categorias.restaurar');
+    Route::get('/dashboard', fn () => view('dashboard.index'))->name('dashboard');
 
+    # CATEGORIAS
+    Route::resource('categorias', CategoriaController::class);
+    Route::patch('/categorias/{categoria}/archivar', [CategoriaController::class, 'archivar'])
+        ->name('categorias.archivar');
+    Route::patch('/categorias/{categoria}/restaurar', [CategoriaController::class, 'restaurar'])
+        ->name('categorias.restaurar');
 #PRODUCTOS
 Route::resource('productos', ProductoController::class);
 Route::patch(
@@ -40,29 +35,29 @@ Route::patch(
     [ProductoController::class, 'restaurar']
 )->name('productos.restaurar');
 
-#PROVEEDORES
-Route::resource('proveedores', ProveedorController::class);
-Route::patch(
-    '/proveedores/{proveedor}/archivar',
-    [ProveedorController::class, 'archivar']
-)->name('proveedores.archivar');
+    # PRODUCTOS
+    Route::resource('productos', ProductoController::class);
+    Route::patch('/productos/{producto}/archivar', [ProductoController::class, 'archivar'])
+        ->name('productos.archivar');
+    Route::patch('/productos/{producto}/restaurar', [ProductoController::class, 'restaurar'])
+        ->name('productos.restaurar');
 
-#USUARIOS
-Route::resource('usuarios', UsuarioController::class);
-Route::patch(
-    '/usuarios/{usuario}/archivar',
-    [UsuarioController::class, 'archivar']
-)->name('usuarios.archivar');
+    # PROVEEDORES (el singular en inglés de "proveedores" sería "proveedore", por eso se fuerza el nombre)
+    Route::resource('proveedores', ProveedorController::class)
+        ->parameters(['proveedores' => 'proveedor']);
+    Route::patch('/proveedores/{proveedor}/archivar', [ProveedorController::class, 'archivar'])
+        ->name('proveedores.archivar');
 
-#ENTREGAS
-Route::resource('entregas', EntregaController::class);
+    # USUARIOS
+    Route::resource('usuarios', UsuarioController::class);
+    Route::patch('/usuarios/{usuario}/archivar', [UsuarioController::class, 'archivar'])
+        ->name('usuarios.archivar');
 
-#MOVIMIENTOS
-Route::resource('movimientos', MovimientoController::class)->except('destroy');
-Route::patch(
-    '/movimientos/{movimiento}/cancelar',
-    [MovimientoController::class, 'cancelar']
-)->name('movimientos.cancelar');
+    # ENTREGAS
+    Route::resource('entregas', EntregaController::class);
 
-Route::get('/dashboard', fn () => view('dashboard.index'))->name('dashboard');
-
+    # MOVIMIENTOS
+    Route::resource('movimientos', MovimientoController::class)->except('destroy');
+    Route::patch('/movimientos/{movimiento}/cancelar', [MovimientoController::class, 'cancelar'])
+        ->name('movimientos.cancelar');
+});

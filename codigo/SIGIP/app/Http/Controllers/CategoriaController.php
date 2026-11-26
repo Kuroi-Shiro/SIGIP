@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ActualizarCategoriaRequest;
 use App\Http\Requests\GuardarCategoriaRequest;
 use App\Models\Categoria;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
+use Throwable;
 
 class CategoriaController extends Controller
 {

@@ -37,8 +37,6 @@
     </script>
 </head>
 
-
-
 <body class="bg-surface font-sans text-ink min-h-screen flex justify-center px-4">
     <div class="w-full max-w-sm pt-6 sm:pt-10">
 
@@ -54,19 +52,20 @@
             <p class="text-sm text-muted mt-1">Ingresa tus credenciales para continuar</p>
         </div>
 
-        <div id="mensaje-error" class="hidden bg-danger/10 border border-danger/30 text-danger px-4 py-3 rounded-lg mb-4">
-            <p class="font-semibold text-sm">Error de autenticación</p>
-            <p id="texto-error" class="text-xs mt-1"></p>
-        </div>
+        @if ($errors->any())
+            <div class="bg-danger/10 border border-danger/30 text-danger px-4 py-3 rounded-lg mb-4">
+                <p class="font-semibold text-sm">Error de autenticación</p>
+                <p class="text-xs mt-1">{{ $errors->first() }}</p>
+            </div>
+        @endif
 
-
-
-        <form id="form-login" class="space-y-4" onsubmit="validarLogin(event)" novalidate>
+        <form method="POST" action="{{ url('/login') }}" class="space-y-4">
+            @csrf
             <div>
                 <label for="email" class="block text-sm font-medium text-ink mb-1.5">
                     Correo electrónico
                 </label>
-                <input type="email" id="email" name="email" required autofocus
+                <input type="email" id="email" name="email" value="{{ old('email') }}" required autofocus
                     class="w-full bg-white border border-line rounded-lg px-4 py-3 text-sm text-ink placeholder:text-muted/70 focus:outline-none focus:border-sidebar focus:ring-1 focus:ring-sidebar transition"
                     placeholder="usuario@spacio.mx">
             </div>
@@ -81,7 +80,7 @@
             </div>
 
             <label class="flex items-center text-sm text-muted">
-                <input type="checkbox" id="remember"
+                <input type="checkbox" id="remember" name="remember" value="1"
                     class="rounded border-line text-sidebar focus:ring-sidebar">
                 <span class="ml-2">Recordar sesión</span>
             </label>
@@ -91,8 +90,6 @@
                 Entrar al sistema
             </button>
         </form>
-
-
 
         <div class="mt-6">
             <p class="text-xs text-muted text-center mb-3">Acceso rápido para prototipo:</p>
@@ -111,85 +108,18 @@
         </div>
     </div>
 
-
-
-
-
-
     <script>
-        const usuarioPrueba = {
-            email: 'usuario@sigip.com',
-            password: 'usuario123',
-            nombre: 'Usuario',
-            rol: 'Empleado'
-        };
+        // Credenciales reales creadas por UsuarioSeeder
+        const adminPrueba   = { email: 'admin@sigip.com',   password: 'password1237' };
+        const usuarioPrueba = { email: 'usuario@sigip.com', password: 'password1237' };
 
-
-        const adminPrueba = {
-            email: 'admin@sigip.com',
-            password: 'admin123',
-            nombre: 'Administrador',
-            rol: 'Administrador'
-        };
-
-
-        function credencialesUsuario() {
-            document.getElementById('email').value = usuarioPrueba.email;
-            document.getElementById('password').value = usuarioPrueba.password;
-            ocultarError();
+        function llenarCredenciales(cuenta) {
+            document.getElementById('email').value = cuenta.email;
+            document.getElementById('password').value = cuenta.password;
         }
 
-
-        function credencialesAdmin() {
-            document.getElementById('email').value = adminPrueba.email;
-            document.getElementById('password').value = adminPrueba.password;
-            ocultarError();
-        }
-
-
-        function validarLogin(event) {
-            event.preventDefault();
-
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value;
-            const recordar = document.getElementById('remember').checked;
-
-            ocultarError();
-
-            if (email === '' || password === '') {
-                mostrarError('Debes ingresar el correo electrónico y la contraseña.');
-                return;
-            }
-
-            let usuario = null;
-
-            if (email === adminPrueba.email && password === adminPrueba.password) {
-                usuario = adminPrueba;
-            } else if (email === usuarioPrueba.email && password === usuarioPrueba.password) {
-                usuario = usuarioPrueba;
-            } else {
-                mostrarError('Correo o contraseña incorrectos.');
-                return;
-            }
-
-            const almacenamiento = recordar ? localStorage : sessionStorage;
-            almacenamiento.setItem('usuario_nombre', usuario.nombre);
-            almacenamiento.setItem('usuario_email', usuario.email);
-            almacenamiento.setItem('usuario_rol', usuario.rol);
-
-            window.location.href = usuario.rol === 'Administrador' ? '/dashboard' : '/categorias';
-        }
-
-
-        function mostrarError(mensaje) {
-            document.getElementById('texto-error').textContent = mensaje;
-            document.getElementById('mensaje-error').classList.remove('hidden');
-        }
-
-
-        function ocultarError() {
-            document.getElementById('mensaje-error').classList.add('hidden');
-        }
+        function credencialesAdmin()   { llenarCredenciales(adminPrueba); }
+        function credencialesUsuario() { llenarCredenciales(usuarioPrueba); }
     </script>
 </body>
 </html>

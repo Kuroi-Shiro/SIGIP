@@ -106,11 +106,14 @@
                 <span id="flecha-colapsar" class="text-base leading-none">←</span>
                 <span class="group-data-[collapsed=true]:hidden">Colapsar</span>
             </button>
-            <a href="{{ route('login') }}"
-               class="w-full flex items-center gap-3 rounded-lg px-3 py-2.5 text-[0.82rem] text-white/40 hover:text-red-300 transition-colors group-data-[collapsed=true]:justify-center group-data-[collapsed=true]:px-0">
-                <span class="text-base leading-none">⊗</span>
-                <span class="group-data-[collapsed=true]:hidden">Cerrar sesión</span>
-            </a>
+            <form method="POST" action="{{ url('/logout') }}">
+                @csrf
+                <button type="submit"
+                   class="w-full flex items-center gap-3 rounded-lg px-3 py-2.5 text-[0.82rem] text-white/40 hover:text-red-300 transition-colors group-data-[collapsed=true]:justify-center group-data-[collapsed=true]:px-0">
+                    <span class="text-base leading-none">⊗</span>
+                    <span class="group-data-[collapsed=true]:hidden">Cerrar sesión</span>
+                </button>
+            </form>
         </div>
     </aside>
 
